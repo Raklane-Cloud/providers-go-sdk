@@ -10,6 +10,7 @@ func TestErrorMessageShapes(t *testing.T) {
 		`{"errors":["a","b"]}`:        "a; b",
 		`{"message":"m"}`:             "m",
 		`{"error":"e"}`:               "e",
+		`{"code":404,"detail":"d"}`:   "d",
 		`not json`:                    "",
 	} {
 		if got := errorMessage([]byte(body)); got != want {

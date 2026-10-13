@@ -17,9 +17,17 @@ func TestCreateVM(t *testing.T) {
 	c, seen := fakeAPI(t, map[string]func() (int, string){"POST /jkt01/user-resource/vm": ok(vmJSON)})
 
 	vm, err := c.CreateVM(context.Background(), CreateVMRequest{
-		Name: "raklane-node-1", OSName: "ubuntu", OSVersion: "24.04", DiskGB: 40, VCPU: 2, RAMMB: 2048,
-		Username: "raklane", Password: "Secret123", PublicKeys: []string{"ssh-ed25519 A", "ssh-ed25519 B"},
-		NetworkUUID: "net-1", CloudInit: "#cloud-config\nruncmd: []\n",
+		Name:        "raklane-node-1",
+		OSName:      "ubuntu",
+		OSVersion:   "24.04",
+		DiskGB:      40,
+		VCPU:        2,
+		RAMMB:       2048,
+		Username:    "raklane",
+		Password:    "Secret123",
+		PublicKeys:  []string{"ssh-ed25519 A", "ssh-ed25519 B"},
+		NetworkUUID: "net-1",
+		CloudInit:   "#cloud-config\nruncmd: []\n",
 	})
 	if err != nil {
 		t.Fatal(err)

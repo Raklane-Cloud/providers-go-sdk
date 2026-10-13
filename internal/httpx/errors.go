@@ -53,11 +53,13 @@ func IsNotFound(err error) bool {
 //	{"errors": {"Error": "No such virtual machine exists."}}
 //	{"errors": ["..."]}
 //	{"message": "..."} / {"error": "..."}
+//	{"code": 404, "detail": "..."}
 func errorMessage(body []byte) string {
 	var shapes struct {
 		Errors  json.RawMessage `json:"errors"`
 		Message string          `json:"message"`
 		Error   any             `json:"error"`
+		Detail  any             `json:"detail"`
 	}
 	if json.Unmarshal(body, &shapes) != nil {
 		return ""
@@ -86,6 +88,9 @@ func errorMessage(body []byte) string {
 		return shapes.Message
 	}
 	if s, ok := shapes.Error.(string); ok {
+		return s
+	}
+	if s, ok := shapes.Detail.(string); ok {
 		return s
 	}
 	return ""
