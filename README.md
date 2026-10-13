@@ -1,10 +1,14 @@
 # providers-go-sdk
 
+> [!WARNING]
+> **Alpha.** Not yet verified against the providers' live APIs; the unit tests only run against fake servers. Expect bugs, missing endpoints and breaking changes between `v0.x` releases. Pin an exact version and don't rely on it in production yet.
+
 Go API clients for cloud providers that don't publish an official Go SDK, used by [Raklane](https://raklane.com) to provision servers. Each provider is its own package; they share a small HTTP layer in `internal/httpx`.
 
 | Package | Provider | Covers |
 |---|---|---|
 | `idcloudhost` | [IDCloudHost](https://idcloudhost.com) (Indonesia) | VMs, block storage, private networks, floating IPs, firewalls, locations, images, billing accounts, pricing |
+| `biznetgio` | [Biznet GIO](https://www.biznetgio.com) (Indonesia) | NEO Lite servers (order, status, power, delete), products and operating systems, SSH keypairs |
 
 The clients follow these rules:
 
@@ -35,6 +39,28 @@ if idcloudhost.IsNotFound(err) { /* ... */ }
 ```
 
 The endpoints follow IDCloudHost's API reference at https://api.idcloudhost.com.
+
+## Biznet GIO
+
+NEO Lite servers are **ordered** on a billing cycle of a month or longer (there is no hourly billing), and they are provisioned once the order's invoice is paid. The API takes no cloud-init, so set new servers up over SSH using an imported keypair.
+
+```go
+c := biznetgio.New(apiToken)
+
+key, err := c.ImportKeypair(ctx, "deploy", publicKey)
+order, err := c.CreateNeoLite(ctx, biznetgio.CreateNeoLiteRequest{
+	ProductID: 1559,
+	Cycle: biznetgio.CycleMonthly,
+	OS: "ubuntu-24.04",
+	KeypairID: key.KeypairID,
+	User: "deploy",
+	ConsolePassword: "Generated-Secret-1",
+	PayWithCreditCard: true, // pay with the card saved on the account
+})
+account, err := c.GetNeoLite(ctx, order.AccountID) // Pending, then Active
+```
+
+`Account.Raw` keeps the account exactly as the API sent it, for fields the package doesn't model. The endpoints follow the portal API at https://api.portal.biznetgio.com/v1.
 
 ## Layout
 
