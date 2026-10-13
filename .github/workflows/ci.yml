@@ -1,0 +1,78 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+permissions:
+  contents: read
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-go@v5
+        with:
+          go-version-file: go.mod
+
+      - name: Check formatting
+        run: |
+          unformatted=$(gofmt -l .)
+          if [ -n "$unformatted" ]; then
+            echo "These files need gofmt:"
+            echo "$unformatted"
+            exit 1
+          fi
+
+      - name: Vet
+        run: go vet ./...
+
+      - name: Test
+        run: go test -race ./...
+
+  tag:
+    # Only tag commits that land on main, after the tests pass.
+    if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+    needs: test
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    concurrency:
+      group: tag
+      cancel-in-progress: false
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Create version tag
+        run: |
+          set -euo pipefail
+
+          if git tag --points-at HEAD | grep -q '^v'; then
+            echo "HEAD is already tagged, nothing to do."
+            exit 0
+          fi
+
+          latest=$(git tag --list 'v*.*.*' --sort=-v:refname | head -n1)
+          if [ -z "$latest" ]; then
+            next=v0.1.0
+          else
+            IFS=. read -r major minor patch <<<"${latest#v}"
+            # Conventional commits since the last tag decide the bump:
+            # feat or a breaking change -> minor, anything else -> patch.
+            # Major bumps stay manual: Go needs a /vN module path for v2+.
+            log=$(git log --format='%s%n%b' "$latest..HEAD")
+            if echo "$log" | grep -qE '^(feat(\(.+\))?!?:|[a-z]+(\(.+\))?!:)|BREAKING CHANGE'; then
+              next="v$major.$((minor + 1)).0"
+            else
+              next="v$major.$minor.$((patch + 1))"
+            fi
+          fi
+
+          echo "Tagging $next"
+          git tag "$next"
+          git push origin "$next"
