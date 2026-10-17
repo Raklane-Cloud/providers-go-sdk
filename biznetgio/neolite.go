@@ -132,9 +132,10 @@ type CreateNeoLiteRequest struct {
 	// provider's web console.
 	User            string
 	ConsolePassword string
-	VMName          string
-	Description     string
-	Promocode       string
+	// VMName is at most 16 characters.
+	VMName      string
+	Description string
+	Promocode   string
 	// PayWithCreditCard pays the order's invoice with the card saved on
 	// the account, so the server is provisioned right away.
 	PayWithCreditCard bool
@@ -161,7 +162,7 @@ func (c *Client) CreateNeoLite(ctx context.Context, req CreateNeoLiteRequest) (*
 		body["promocode"] = req.Promocode
 	}
 	if req.PayWithCreditCard {
-		body["pay_invoice_with_cc"] = true
+		body["pay_invoice_with_cc"] = "yes" // the API takes "yes"/"no", not a bool
 	}
 	var order Order
 	if err := c.do(ctx, http.MethodPost, "/neolites", nil, httpx.JSON(body), &order); err != nil {

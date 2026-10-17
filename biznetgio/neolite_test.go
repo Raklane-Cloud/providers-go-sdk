@@ -27,7 +27,7 @@ func TestCreateNeoLite(t *testing.T) {
 	}
 	want := map[string]any{
 		"product_id": float64(1559), "cycle": "m", "select_os": "ubuntu-24.04", "keypair_id": float64(9),
-		"ssh_and_console_user": "raklane", "console_password": "pw", "vm_name": "node-1", "pay_invoice_with_cc": true,
+		"ssh_and_console_user": "raklane", "console_password": "pw", "vm_name": "node-1", "pay_invoice_with_cc": "yes",
 	}
 	for k, v := range want {
 		if got.JSON[k] != v {
