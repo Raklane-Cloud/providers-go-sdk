@@ -20,23 +20,41 @@ type Product struct {
 
 // ProductOptions is a product's size.
 type ProductOptions struct {
-	Type   string `json:"type"`
-	Cores  int64  `json:"cores"`
-	Memory int64  `json:"memory"`
+	Type  string `json:"type"`
+	Cores Int    `json:"cores"`
+	// Memory is in MB.
+	Memory Int `json:"memory"`
 }
 
 // ProductBilling is a product's price on one billing cycle, in rupiah.
 type ProductBilling struct {
 	Label string `json:"label"`
 	Cycle string `json:"cycle"`
-	Price int64  `json:"price"`
+	Price Int    `json:"price"`
+	// Components are priced add-ons on this cycle, e.g. extra disk.
+	Components []BillingComponent `json:"components"`
+}
+
+// BillingComponent is a priced add-on, e.g. "disk_size" per GB.
+type BillingComponent struct {
+	Label  string           `json:"label"`
+	Field  string           `json:"field"`
+	Prices []ComponentPrice `json:"prices"`
+}
+
+// ComponentPrice is a component's unit price for quantities from QtyMin
+// to QtyMax.
+type ComponentPrice struct {
+	QtyMin Int `json:"qty_min"`
+	QtyMax Int `json:"qty_max"`
+	Price  Int `json:"price"`
 }
 
 // Price is what p costs on cycle, and whether it's sold on it.
 func (p Product) Price(cycle string) (int64, bool) {
 	for _, b := range p.Billing {
 		if b.Cycle == cycle {
-			return b.Price, true
+			return int64(b.Price), true
 		}
 	}
 	return 0, false
@@ -44,11 +62,12 @@ func (p Product) Price(cycle string) (int64, bool) {
 
 // OS is an operating system a product can be ordered with.
 type OS struct {
-	Name   string `json:"name"`
-	VMID   ID     `json:"vmid"`
-	Node   string `json:"node"`
-	MaxMem int64  `json:"maxmem"`
-	MaxCPU int64  `json:"maxcpu"`
+	Name string `json:"name"`
+	VMID ID     `json:"vmid"`
+	Node string `json:"node"`
+	// MaxMem is in bytes.
+	MaxMem Int `json:"maxmem"`
+	MaxCPU Int `json:"maxcpu"`
 }
 
 // ListNeoLiteProducts returns the NEO Lite sizes on sale.

@@ -1,0 +1,8 @@
+{
+  "success": true,
+  "code": 200,
+  "data": [
+    {"node": "telit01pve45", "vmid": 1014, "name": "Ubuntu-24.04", "maxmem": 1073741824, "maxcpu": 1},
+    {"node": "telit01pve01", "vmid": 1015, "name": "Debian-12", "maxmem": 1073741824, "maxcpu": 1}
+  ]
+}

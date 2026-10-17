@@ -49,7 +49,7 @@ type Account struct {
 	BillingCycle    string         `json:"billingcycle"`
 	DateCreated     string         `json:"date_created"`
 	NextDue         string         `json:"next_due"`
-	RecurringAmount int64          `json:"recurring_amount"`
+	RecurringAmount Int            `json:"recurring_amount"`
 	ProductID       ID             `json:"product_id"`
 	ProductName     string         `json:"product_name"`
 	Description     string         `json:"description"`
@@ -112,11 +112,11 @@ type VM struct {
 	Status string `json:"status"`
 	// Uptime is in seconds; MaxMem and Mem in bytes or MB, as the
 	// hypervisor reports them.
-	Uptime  int64 `json:"uptime"`
-	MaxDisk int64 `json:"maxdisk"`
-	MaxMem  int64 `json:"maxmem"`
-	Mem     int64 `json:"mem"`
-	CPUs    int64 `json:"cpus"`
+	Uptime  Int `json:"uptime"`
+	MaxDisk Int `json:"maxdisk"`
+	MaxMem  Int `json:"maxmem"`
+	Mem     Int `json:"mem"`
+	CPUs    Int `json:"cpus"`
 }
 
 // CreateNeoLiteRequest orders a NEO Lite server. ProductID, Cycle, OS,

@@ -1,0 +1,32 @@
+{
+  "success": true,
+  "code": 200,
+  "data": [
+    {
+      "product_id": "731",
+      "name": "XS 1.1",
+      "description": "1,1,60,1",
+      "category_id": "134",
+      "category_name": "NEO Lite",
+      "options": {"type": "VM", "cores": "1", "memory": "1024", "allow_downgrade": "0", "reseller": "", "backup_fleecing": ""},
+      "billing": [
+        {"label": "Monthly", "cycle": "m", "price": "59000.00",
+         "components": [{"label": "Disk Size", "field": "disk_size", "prices": [{"qty_min": "0", "qty_max": "1000", "price": "1650.00"}]}]},
+        {"label": "Annually", "cycle": "a", "price": "708000.00",
+         "components": [{"label": "Disk Size", "field": "disk_size", "prices": [{"qty_min": "0", "qty_max": "1000", "price": "19800.00"}]}]}
+      ]
+    },
+    {
+      "product_id": "740",
+      "name": "MS 4.2",
+      "description": "2,4,60,1",
+      "category_id": "134",
+      "category_name": "NEO Lite",
+      "options": {"type": "VM", "cores": "2", "memory": "4096", "allow_downgrade": "0", "reseller": "", "backup_fleecing": ""},
+      "billing": [
+        {"label": "Monthly", "cycle": "m", "price": "139000.00",
+         "components": [{"label": "Disk Size", "field": "disk_size", "prices": [{"qty_min": "0", "qty_max": "1000", "price": "1650.00"}]}]}
+      ]
+    }
+  ]
+}
